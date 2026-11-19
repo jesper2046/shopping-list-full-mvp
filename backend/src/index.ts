@@ -364,6 +364,13 @@ async function init() {
     res.json({ members: rows.map((r: any) => ({ id: r.id, username: r.username, email: r.email, created_at: r.created_at })) });
   });
 
+  // ---------- serve built frontend ----------
+  const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+  app.use(express.static(frontendDist));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+
   app.use((err: any, req: any, res: any, next: any) => {
     console.error('Unhandled error:', err);
     res.status(500).json({ error: 'Internal server error: ' + (err.message || 'unknown') });
